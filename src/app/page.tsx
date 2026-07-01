@@ -1,14 +1,25 @@
+import Link from "next/link";
+
 import styles from "./page.module.css";
 
 import { checkDatabaseConnection, getStockList } from "@/lib/db";
 
-export default async function Home() {
+type HomeProps = {
+  searchParams?: Promise<{
+    keyword?: string;
+  }>;
+};
+
+export default async function Home({ searchParams }: HomeProps) {
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
+  const keyword = resolvedSearchParams?.keyword?.trim() ?? "";
+
   let databaseStatus: { ok: boolean; serverTime?: string; message?: string };
   let stocks: Awaited<ReturnType<typeof getStockList>> = [];
 
   try {
     databaseStatus = await checkDatabaseConnection();
-    stocks = await getStockList(100);
+    stocks = await getStockList({ keyword, limit: 100 });
   } catch (error) {
     databaseStatus = {
       ok: false,
@@ -25,7 +36,7 @@ export default async function Home() {
           <p className={styles.eyebrow}>Stock Frontend</p>
           <h1>股票列表</h1>
           <p className={styles.lead}>
-            首页直接从 MySQL 的 <code>stock_info</code> 表查询股票列表，服务端渲染输出，不暴露数据库凭据。
+            首页直接从 MySQL 的 <code>stock_info</code> 表查询股票列表，支持按代码、名称、市场、行业搜索。
           </p>
         </section>
 
@@ -52,16 +63,37 @@ export default async function Home() {
             <ul className={styles.metaList}>
               <li>当前展示: {stocks.length} 条</li>
               <li>活跃股票: {activeCount} 条</li>
-              <li>列表接口: GET /api/stocks?limit=100</li>
+              <li>搜索关键词: {keyword || "无"}</li>
+              <li>列表接口: GET /api/stocks?limit=100&amp;keyword=平安</li>
             </ul>
           </article>
         </section>
 
         <section className={styles.panel}>
-          <div className={styles.cardHeader}>
-            <h2>股票列表</h2>
+          <div className={styles.searchHeader}>
+            <div>
+              <h2>股票列表</h2>
+              <p className={styles.cardText}>可搜索股票代码、名称、市场、行业</p>
+            </div>
             <span className={styles.muted}>{stocks.length} rows</span>
           </div>
+
+          <form className={styles.searchForm}>
+            <input
+              className={styles.searchInput}
+              type="text"
+              name="keyword"
+              defaultValue={keyword}
+              placeholder="例如：000001、平安、主板、银行"
+            />
+            <button className={styles.searchButton} type="submit">
+              搜索
+            </button>
+            <Link className={styles.resetButton} href="/">
+              重置
+            </Link>
+          </form>
+
           {stocks.length > 0 ? (
             <div className={styles.tableWrap}>
               <table className={styles.table}>
@@ -94,7 +126,7 @@ export default async function Home() {
               </table>
             </div>
           ) : (
-            <p className={styles.cardText}>没有查询到股票数据。</p>
+            <p className={styles.cardText}>没有查询到匹配的股票数据。</p>
           )}
         </section>
       </main>

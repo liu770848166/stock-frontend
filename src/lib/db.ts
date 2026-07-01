@@ -19,6 +19,11 @@ export type StockListItem = {
   isActive: boolean;
 };
 
+export type StockListFilters = {
+  keyword?: string;
+  limit?: number;
+};
+
 export function getPool() {
   const missing = getMissingEnvVars();
 
@@ -57,17 +62,35 @@ export async function checkDatabaseConnection() {
   }
 }
 
-export async function getStockList(limit = 100) {
+export async function getStockList(filters: StockListFilters = {}) {
   const pool = getPool();
-  const [rows] = await pool.query<mysql.RowDataPacket[]>(
-    `
-      SELECT stock_code, stock_name, market, industry, list_date, is_active
-      FROM stock_info
-      ORDER BY is_active DESC, stock_code ASC
-      LIMIT ?
-    `,
-    [limit],
-  );
+  const limit = Number.isFinite(filters.limit) ? Number(filters.limit) : 100;
+  const keyword = filters.keyword?.trim();
+  const values: Array<number | string> = [];
+
+  let query = `
+    SELECT stock_code, stock_name, market, industry, list_date, is_active
+    FROM stock_info
+  `;
+
+  if (keyword) {
+    query += `
+      WHERE stock_code LIKE ?
+         OR stock_name LIKE ?
+         OR market LIKE ?
+         OR industry LIKE ?
+    `;
+    const likeValue = `%${keyword}%`;
+    values.push(likeValue, likeValue, likeValue, likeValue);
+  }
+
+  query += `
+    ORDER BY is_active DESC, stock_code ASC
+    LIMIT ?
+  `;
+  values.push(limit);
+
+  const [rows] = await pool.query<mysql.RowDataPacket[]>(query, values);
 
   return rows.map((row) => ({
     stockCode: String(row.stock_code),

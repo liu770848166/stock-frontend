@@ -26,8 +26,8 @@ Open [http://localhost:3000](http://localhost:3000).
 
 - Server-side connection helper: `src/lib/db.ts`
 - Health endpoint: `GET /api/health`
-- Stock list endpoint: `GET /api/stocks?limit=100`
-- Homepage: renders stock list from `stock_info`
+- Stock list endpoint: `GET /api/stocks?limit=100&keyword=平安`
+- Homepage: renders stock list from `stock_info` and supports search
 
 Database queries run only on the server. Do not move connection logic into client components.
 
