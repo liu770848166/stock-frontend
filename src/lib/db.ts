@@ -10,6 +10,15 @@ declare global {
   var mysqlPool: mysql.Pool | undefined;
 }
 
+export type StockListItem = {
+  stockCode: string;
+  stockName: string;
+  market: string;
+  industry: string | null;
+  listDate: string | null;
+  isActive: boolean;
+};
+
 export function getPool() {
   const missing = getMissingEnvVars();
 
@@ -48,14 +57,13 @@ export async function checkDatabaseConnection() {
   }
 }
 
-export async function getStockSummary(limit = 8) {
+export async function getStockList(limit = 100) {
   const pool = getPool();
   const [rows] = await pool.query<mysql.RowDataPacket[]>(
     `
-      SELECT stock_code, stock_name, market
+      SELECT stock_code, stock_name, market, industry, list_date, is_active
       FROM stock_info
-      WHERE is_active = 1
-      ORDER BY stock_code ASC
+      ORDER BY is_active DESC, stock_code ASC
       LIMIT ?
     `,
     [limit],
@@ -65,5 +73,8 @@ export async function getStockSummary(limit = 8) {
     stockCode: String(row.stock_code),
     stockName: String(row.stock_name),
     market: String(row.market),
-  }));
+    industry: row.industry ? String(row.industry) : null,
+    listDate: row.list_date ? new Date(row.list_date).toISOString().slice(0, 10) : null,
+    isActive: Boolean(row.is_active),
+  })) as StockListItem[];
 }

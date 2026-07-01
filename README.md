@@ -26,19 +26,18 @@ Open [http://localhost:3000](http://localhost:3000).
 
 - Server-side connection helper: `src/lib/db.ts`
 - Health endpoint: `GET /api/health`
-- Sample homepage query: reads active stocks from `stock_info`
+- Stock list endpoint: `GET /api/stocks?limit=100`
+- Homepage: renders stock list from `stock_info`
 
 Database queries run only on the server. Do not move connection logic into client components.
 
 ## Expected tables
 
-The homepage currently expects:
+The current stock list expects:
 
 ```sql
-stock_info(stock_code, stock_name, market, is_active)
+stock_info(stock_code, stock_name, market, industry, list_date, is_active)
 ```
-
-If that table is missing, the page will still load, but the query section will show an error or zero rows.
 
 ## Scripts
 
