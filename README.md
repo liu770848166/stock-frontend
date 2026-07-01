@@ -22,6 +22,12 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+## UI stack
+
+- Ant Design
+- `@ant-design/nextjs-registry`
+- Next.js App Router
+
 ## Database access
 
 - Server-side connection helper: `src/lib/db.ts`
