@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-import { CheckCircleOutlined, DatabaseOutlined, SearchOutlined } from "@ant-design/icons";
+import { CheckCircleOutlined, DatabaseOutlined, SearchOutlined, StockOutlined } from "@ant-design/icons";
 import { Button, Card, Col, ConfigProvider, Input, Layout, Row, Space, Statistic, Table, Tag, Typography } from "antd";
 import type { ColumnsType } from "antd/es/table";
 
@@ -33,14 +33,14 @@ export default function StockDashboard({ keyword, stocks, databaseStatus }: Stoc
       title: "名称",
       dataIndex: "stockName",
       key: "stockName",
-      width: 160,
+      width: 170,
     },
     {
       title: "市场",
       dataIndex: "market",
       key: "market",
       width: 120,
-      render: (value: string) => <Tag color="gold">{value}</Tag>,
+      render: (value: string) => <Tag color="blue">{value}</Tag>,
     },
     {
       title: "行业",
@@ -68,18 +68,44 @@ export default function StockDashboard({ keyword, stocks, databaseStatus }: Stoc
     <ConfigProvider
       theme={{
         token: {
-          colorPrimary: "#7a4b12",
-          borderRadius: 14,
-          colorBgLayout: "#f3ead7",
+          colorPrimary: "#1677ff",
+          borderRadius: 10,
+          colorBgLayout: "#0d1420",
+          colorBgContainer: "#141c2b",
+          colorBorder: "#22304a",
+          colorText: "#e7edf7",
+          colorTextSecondary: "#95a3bf",
           fontFamily: "var(--font-geist-sans), sans-serif",
         },
         components: {
+          Layout: {
+            bodyBg: "#0d1420",
+          },
           Card: {
-            borderRadiusLG: 24,
+            colorBgContainer: "#141c2b",
+            colorBorderSecondary: "#22304a",
+            headerBg: "#141c2b",
           },
           Table: {
-            headerBg: "#f7efde",
-            rowHoverBg: "#fcf7ed",
+            headerBg: "#182233",
+            headerColor: "#8ea1c0",
+            colorBgContainer: "#141c2b",
+            colorText: "#e7edf7",
+            borderColor: "#22304a",
+            rowHoverBg: "#182233",
+          },
+          Input: {
+            colorBgContainer: "#0f1724",
+            colorBorder: "#22304a",
+            colorText: "#e7edf7",
+            activeBorderColor: "#1677ff",
+            hoverBorderColor: "#3b82f6",
+          },
+          Button: {
+            primaryShadow: "none",
+            defaultBg: "#141c2b",
+            defaultColor: "#d8e1f0",
+            defaultBorderColor: "#22304a",
           },
         },
       }}
@@ -87,46 +113,48 @@ export default function StockDashboard({ keyword, stocks, databaseStatus }: Stoc
       <Layout className={styles.layout}>
         <Content className={styles.content}>
           <div className={styles.hero}>
-            <Text className={styles.eyebrow}>STOCK FRONTEND</Text>
+            <Space size={12} align="center" className={styles.heroBadge}>
+              <StockOutlined />
+              <Text className={styles.eyebrow}>TRADING TERMINAL</Text>
+            </Space>
             <Title className={styles.title}>股票列表</Title>
             <Paragraph className={styles.subtitle}>
-              使用 <Text code>Ant Design</Text> 构建股票后台列表页，服务端直接查询 <Text code>stock_info</Text>
-              ，支持按代码、名称、市场、行业搜索。
+              面向交易终端风格的股票后台列表页，服务端直接查询 <Text code>stock_info</Text>，支持按代码、名称、市场、行业搜索。
             </Paragraph>
           </div>
 
-          <Row gutter={[20, 20]}>
-            <Col xs={24} md={12}>
-              <Card>
-                <Space direction="vertical" size={12} style={{ width: "100%" }}>
-                  <Space align="center">
-                    <DatabaseOutlined />
-                    <Text strong>数据库状态</Text>
-                    <Tag color={databaseStatus.ok ? "green" : "red"}>{databaseStatus.ok ? "Connected" : "Unavailable"}</Tag>
-                  </Space>
-                  <Paragraph className={styles.mutedText}>
-                    {databaseStatus.ok
-                      ? `Server time: ${databaseStatus.serverTime}`
-                      : databaseStatus.message ?? "Database connection failed."}
-                  </Paragraph>
-                  <Text code>GET /api/health</Text>
+          <Row gutter={[16, 16]}>
+            <Col xs={24} md={8}>
+              <Card className={styles.metricCard}>
+                <Space align="center" className={styles.metricTitle}>
+                  <DatabaseOutlined />
+                  <Text strong>数据库状态</Text>
                 </Space>
+                <div className={styles.metricValueWrap}>
+                  <Tag color={databaseStatus.ok ? "green" : "red"}>{databaseStatus.ok ? "Connected" : "Unavailable"}</Tag>
+                </div>
+                <Paragraph className={styles.mutedText}>
+                  {databaseStatus.ok
+                    ? `Server time: ${databaseStatus.serverTime}`
+                    : databaseStatus.message ?? "Database connection failed."}
+                </Paragraph>
+                <Text code>GET /api/health</Text>
               </Card>
             </Col>
-            <Col xs={24} md={12}>
-              <Card>
-                <Row gutter={[16, 16]}>
-                  <Col span={12}>
-                    <Statistic title="当前展示" value={stocks.length} suffix="条" />
-                  </Col>
-                  <Col span={12}>
-                    <Statistic title="活跃股票" value={activeCount} suffix="条" prefix={<CheckCircleOutlined />} />
-                  </Col>
-                  <Col span={24}>
-                    <Paragraph className={styles.mutedText}>搜索关键词: {keyword || "无"}</Paragraph>
-                    <Text code>GET /api/stocks?limit=100&amp;keyword=平安</Text>
-                  </Col>
-                </Row>
+            <Col xs={24} md={8}>
+              <Card className={styles.metricCard}>
+                <div className={styles.statWrap}>
+                  <Statistic title="当前展示" value={stocks.length} suffix="条" />
+                </div>
+                <Paragraph className={styles.metricFoot}>当前列表已按搜索条件过滤。</Paragraph>
+              </Card>
+            </Col>
+            <Col xs={24} md={8}>
+              <Card className={styles.metricCard}>
+                <div className={styles.statWrap}>
+                  <Statistic title="活跃股票" value={activeCount} suffix="条" prefix={<CheckCircleOutlined />} />
+                </div>
+                <Paragraph className={styles.metricFoot}>搜索关键词: {keyword || "无"}</Paragraph>
               </Card>
             </Col>
           </Row>
@@ -137,7 +165,7 @@ export default function StockDashboard({ keyword, stocks, databaseStatus }: Stoc
                 <Title level={4} className={styles.sectionTitle}>
                   股票列表
                 </Title>
-                <Paragraph className={styles.mutedText}>可搜索股票代码、名称、市场、行业</Paragraph>
+                <Paragraph className={styles.mutedText}>列表接口: GET /api/stocks?limit=100&amp;keyword=平安</Paragraph>
               </div>
               <Text type="secondary">{stocks.length} rows</Text>
             </div>

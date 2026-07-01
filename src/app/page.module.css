@@ -1,50 +1,81 @@
 .layout {
   min-height: 100vh;
   background:
-    radial-gradient(circle at top, rgba(255, 196, 87, 0.24), transparent 26%),
-    linear-gradient(180deg, #f7f0e1 0%, #f0e5cf 52%, #ebdec5 100%) !important;
+    radial-gradient(circle at top, rgba(40, 80, 160, 0.22), transparent 24%),
+    linear-gradient(180deg, #0b111b 0%, #0d1420 48%, #0a1018 100%) !important;
 }
 
 .content {
-  width: min(1180px, calc(100% - 32px));
+  width: min(1240px, calc(100% - 24px));
   margin: 0 auto;
-  padding: 32px 0 40px;
+  padding: 20px 0 28px;
 }
 
 .hero {
-  margin-bottom: 24px;
-  padding: 32px 36px;
-  border: 1px solid rgba(91, 55, 13, 0.08);
-  border-radius: 28px;
-  background: rgba(255, 250, 241, 0.82);
-  box-shadow: 0 24px 80px rgba(106, 72, 20, 0.08);
+  margin-bottom: 16px;
+  padding: 24px 28px;
+  border: 1px solid rgba(56, 80, 120, 0.36);
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(18, 27, 41, 0.96), rgba(15, 22, 33, 0.92));
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.28);
+}
+
+.heroBadge {
+  margin-bottom: 6px;
 }
 
 .eyebrow {
-  color: #8b5e1a !important;
-  font-size: 12px;
+  color: #8fb7ff !important;
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.28em;
+  letter-spacing: 0.24em;
 }
 
 .title,
 .sectionTitle {
-  margin-top: 10px !important;
+  margin-top: 6px !important;
   margin-bottom: 0 !important;
-  color: #241606 !important;
+  color: #f4f7fb !important;
 }
 
 .subtitle {
-  max-width: 760px;
-  margin-top: 16px;
+  max-width: 860px;
+  margin-top: 12px;
   margin-bottom: 0 !important;
-  color: #5d4a2b;
-  font-size: 17px;
-  line-height: 1.8;
+  color: #97a6c2 !important;
+  font-size: 15px;
+  line-height: 1.7;
 }
 
 .tableCard {
-  margin-top: 24px;
+  margin-top: 16px;
+  border-radius: 16px !important;
+}
+
+.metricCard {
+  min-height: 178px;
+}
+
+.metricTitle {
+  margin-bottom: 12px;
+}
+
+.metricValueWrap {
+  margin-bottom: 12px;
+}
+
+.metricFoot {
+  margin-top: 12px !important;
+  margin-bottom: 0 !important;
+  color: #7384a3 !important;
+}
+
+.statWrap :global(.ant-statistic-title) {
+  color: #8ea1c0;
+}
+
+.statWrap :global(.ant-statistic-content) {
+  color: #f8fbff;
 }
 
 .tableHeader {
@@ -52,30 +83,30 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .searchForm {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto auto;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 10px;
+  margin-bottom: 12px;
 }
 
 .mutedText {
-  color: #6b5a3b !important;
+  color: #8ea1c0 !important;
   margin-bottom: 0 !important;
 }
 
 @media (max-width: 768px) {
   .content {
-    width: min(100% - 20px, 1180px);
-    padding: 20px 0 28px;
+    width: min(100% - 16px, 1240px);
+    padding: 14px 0 20px;
   }
 
   .hero {
-    padding: 24px 20px;
-    border-radius: 22px;
+    padding: 18px 16px;
+    border-radius: 16px;
   }
 
   .tableHeader {
