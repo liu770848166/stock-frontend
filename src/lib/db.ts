@@ -24,6 +24,25 @@ export type StockListFilters = {
   limit?: number;
 };
 
+function formatDateValue(value: unknown) {
+  if (!value) {
+    return null;
+  }
+
+  if (typeof value === "string") {
+    return value.slice(0, 10);
+  }
+
+  if (value instanceof Date) {
+    const year = value.getFullYear();
+    const month = String(value.getMonth() + 1).padStart(2, "0");
+    const day = String(value.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
+  return String(value);
+}
+
 export function getPool() {
   const missing = getMissingEnvVars();
 
@@ -38,6 +57,7 @@ export function getPool() {
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
+      charset: "utf8mb4",
       waitForConnections: true,
       connectionLimit: 10,
       queueLimit: 0,
@@ -97,7 +117,7 @@ export async function getStockList(filters: StockListFilters = {}) {
     stockName: String(row.stock_name),
     market: String(row.market),
     industry: row.industry ? String(row.industry) : null,
-    listDate: row.list_date ? new Date(row.list_date).toISOString().slice(0, 10) : null,
+    listDate: formatDateValue(row.list_date),
     isActive: Boolean(row.is_active),
   })) as StockListItem[];
 }
